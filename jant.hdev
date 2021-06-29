@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.1" halcon_version="17.12">
+<procedure name="main">
+<interface/>
+<body>
+<l>dev_update_window ('off')</l>
+<l>dev_close_window ()</l>
+<l>*read_image (Yanik4, 'F:/Visiomex/olcum/Alinmis Goruntuler/Dar_aci_aydinlatma/t2/yanik (4).jpg')</l>
+<l>read_image (Yanik4, 'F:/Visiomex/olcum/Alinmis Goruntuler/Dar_aci_aydinlatma/tirnak_1/4.jpg')</l>
+<c></c>
+<l>get_image_size (Yanik4, Width, Height)</l>
+<l>dev_open_window (0, 0, Width/2, Height/2, 'black', WindowID)</l>
+<l>dev_resize_window_fit_size (0, 0, Width, Height, -1, 640)</l>
+<l>set_display_font (WindowID, 12, 'Courier', 'true', 'false')</l>
+<l>dev_set_draw ('margin')</l>
+<l>dev_set_line_width (3)</l>
+<c></c>
+<l>set_display_font (WindowID, 12, 'Courier', 'true', 'false')</l>
+<l>disp_continue_message (WindowID, 'black', 'true')</l>
+<l>stop ()</l>
+<l>dev_display (Yanik4)</l>
+<c></c>
+<c></c>
+<l>Row :=482.06</l>
+<l>Column := 1516.3</l>
+<l>Length1 := 358.628</l>
+<l>Length2 := 204.487</l>
+<l>Angle := rad(90.04541)</l>
+<c>***edge_sub_pix</c>
+<c>**select_contours</c>
+<c>*union_adj....</c>
+<c></c>
+<l>* Row :=440.5</l>
+<l>* Column := 1612.5</l>
+<l>* Length1 := 100.626</l>
+<l>* Length2 := 70.9</l>
+<l>* Angle := rad(-8.45503)</l>
+<l>* gen_rectangle2 (ROI, Row, Column, Angle, Length1, Length2)</l>
+<l>* gen_rectangle2 (ROI, 458.5, 1712.5, rad(-8.45503), 149.626, 114.9)</l>
+<c></c>
+<l>*gen_rectangle2 (ROI_1_0, 486.893, 1841.82, rad(-90.4539), 28.5609, 7.71919)</l>
+<c></c>
+<c></c>
+<l>gen_rectangle2 (ROI_0, 482.06, 1516.3, rad(2.04541), 358.628, 204.487)</l>
+<c></c>
+<l>gen_measure_rectangle2 (Row, Column, Angle, Length1, Length2, Width, Height, 'bilinear', MeasureHandle)</l>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<l>edges_sub_pix (Yanik4, Edges, 'canny', 10, 20, 40)</l>
+<l>select_contours_xld (Edges, SelectedContours, 'contour_length', 0.5, 200, -0.5, 0.5)</l>
+<l>union_adjacent_contours_xld (SelectedContours, UnionContours, 1, 1, 'attr_keep')</l>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<c></c>
+<l>dev_display (Yanik4)</l>
+<l>disp_continue_message (WindowID, 'black', 'true')</l>
+<l>stop ()</l>
+<c></c>
+<l>* gauss_filter (Yanik4, ImageGauss, 11)</l>
+<l>* mean_image (Yanik4, ImageMean, 9, 9)</l>
+<l>* scale_image_range (Yanik4, ImageScaled, Row, Column)</l>
+<c></c>
+<l>measure_pairs (Yanik4, MeasureHandle, 1.5, 15, 'all', 'all', RowEdgeFirst, ColumnEdgeFirst, AmplitudeFirst, RowEdgeSecond, ColumnEdgeSecond, AmplitudeSecond, IntraDistance, InterDistance)</l>
+<c></c>
+<l>disp_continue_message (WindowID, 'black', 'true')</l>
+<l>stop ()</l>
+<c></c>
+<l>for i := 0 to |RowEdgeFirst|-1 by 1</l>
+<c>    </c>
+<l>*     row1:= [cos(Angle+rad(90))*Length2+RowEdgeFirst[i], cos(Angle-rad(90))*Length2+RowEdgeFirst[i]]</l>
+<l>*     column1:=[-sin(Angle+rad(90))*Length2+ColumnEdgeFirst[i], -sin(Angle-rad(90))*Length2+ColumnEdgeFirst[i]]</l>
+<c>    </c>
+<l>*     row2:=[cos(Angle+rad(90))*Length2+RowEdgeSecond[i], cos(Angle-rad(90))*Length2+RowEdgeSecond[i]]</l>
+<l>*     column2:=[-sin(Angle+rad(90))*Length2+ColumnEdgeSecond[i], -sin(Angle-rad(90))*Length2+ColumnEdgeSecond[i]]</l>
+<l>   row1:= [sin(Angle+rad(90))*Length2+RowEdgeFirst[i], sin(Angle-rad(90))*Length2+RowEdgeFirst[i]]</l>
+<l>    column1:=[-cos(Angle+rad(90))*Length2+ColumnEdgeFirst[i], -cos(Angle-rad(90))*Length2+ColumnEdgeFirst[i]]</l>
+<c>    </c>
+<l>  row2:=[sin(Angle+rad(90))*Length2+RowEdgeSecond[i], sin(Angle-rad(90))*Length2+RowEdgeSecond[i]]</l>
+<l>    column2:=[-cos(Angle+rad(90))*Length2+ColumnEdgeSecond[i], -cos(Angle-rad(90))*Length2+ColumnEdgeSecond[i]]</l>
+<c>    </c>
+<c></c>
+<l>    gen_contour_polygon_xld (EdgeFirst, row1, column1)</l>
+<l>    gen_contour_polygon_xld (EdgeSecond, row2, column2)</l>
+<c>    </c>
+<c>    </c>
+<l>    dev_set_color ('cyan')</l>
+<l>    dev_display (EdgeFirst)</l>
+<l>    dev_set_color ('magenta')</l>
+<l>    dev_display (EdgeSecond)</l>
+<l>    dev_set_color ('blue')</l>
+<c>    </c>
+<l>    dev_set_color ('red')</l>
+<l>    if (i = 0)</l>
+<l>        set_tposition (200000, RowEdgeFirst[i] + 5, ColumnEdgeFirst[i]+20)</l>
+<l>    else</l>
+<l>        set_tposition (200000, RowEdgeFirst[i] - 40, ColumnEdgeFirst[i]+20)</l>
+<l>    endif</l>
+<l>    write_string (200000, 'width: '+IntraDistance[i]+' pix')</l>
+<l>endfor</l>
+<l>disp_continue_message (WindowID, 'black', 'true')</l>
+<l>stop ()</l>
+<c>    </c>
+<c></c>
+<l>close_measure (MeasureHandle)</l>
+<l>dev_update_window ('on')</l>
+<l>dev_clear_window ()</l>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>
